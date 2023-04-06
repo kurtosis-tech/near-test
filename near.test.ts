@@ -20,7 +20,8 @@ const LOG_LEVEL = "info"
 const EXPLORER_FRONTEND_SERVICE_NAME = "explorer-frontend"
 const EXPLORER_FRONTEND_HTTP_PORT_ID = "http"
 
-const TARGET_BLOCK_HEIGHT = 100
+const TARGET_BLOCK_HEIGHT = 80
+const TIME_TO_WAIT = 5 * 60 * 1000 // 5 minutes in milliseconds
 
 const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = `
 near_package = import_module("github.com/kurtosis-tech/near-package/main.star")
@@ -41,7 +42,7 @@ log.setLevel(LOG_LEVEL)
 /*
 This example will:
 1. Spin up a near package via composition
-2. Make assertions on the state of the forntend
+2. Make assertions on the state of the frontend
 */
 test("Test NEAR package", async () => {
 
@@ -95,7 +96,7 @@ test("Test NEAR package", async () => {
 
         log.info(`Explorer available on URL ${explorerUrl}`)
 
-        const endTime = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
+        const endTime = Date.now() + TIME_TO_WAIT;
 
         let blockHeight = 0
 
