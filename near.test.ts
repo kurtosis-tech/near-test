@@ -30,8 +30,8 @@ def run(plan, args):
 jest.setTimeout(180000)
 
 test('Quicker iteration', async() => {
-    const url  = 'http://127.0.0.1:8331/'
 
+    const url  = 'http://127.0.0.1:8331/'
     // get some data from the frontend
     log.info("Testing frontend by getting some data")
     const getResponse = await fetch(
@@ -43,12 +43,10 @@ test('Quicker iteration', async() => {
     expect(getResponse.status).toEqual(200)
 
     const responseBody = await getResponse.text()
-
     const dom = new JSDOM(responseBody)
     const document = dom.window.document
-    const xpathToBlockHeight = "//*[@id=\"__next\"]/div[1]/div[3]/div/div[2]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div[2]/div/span"
-    const result = xpath.evaluate(xpathToBlockHeight, document, null, 2, null);
-    const blockHeight = result.stringValue
+    const value = document.querySelector("#__next > div.c-AppWrapper-eIdCBM > div.c-DashboardContainer-duUWuj.container > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(1) > div > div > div > div.c-CardCellText-gSWYEZ.ml-auto.align-self-center.col-md-12.col-12 > div > span").innerHTML
+    const blockHeight:number = parseInt(value.replace(",", ""))
     log.info(blockHeight)
     expect(blockHeight).toBeGreaterThan(1400)
 })
