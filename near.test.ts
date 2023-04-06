@@ -25,6 +25,12 @@ const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = `
 near_package = import_module("github.com/kurtosis-tech/near-package/main.star")
 def run(plan, args):
     near_package_output = near_package.run(plan, args)
+    request_recipe = GetHttpRequestRecipe(
+        port_id = "http",
+        endpoint = "/"
+    )
+    # ensure that explorer is up and responds
+    plan.wait(service_name = "explorer-frontend", recipe = request_recipe, field="code", assertion = "==", target_value = 200, timeout = "60s")
     return near_package_output
 `
 
@@ -92,7 +98,6 @@ test("Test NEAR package", async () => {
 
         let blockHeight = 0
 
-
         // for a total of 5 minutes keep requesting the API until block height > TARGET_BLOCK_HEIGHT
         while (Date.now() < endTime) {
             log.info("Testing frontend by getting some data")
@@ -120,7 +125,7 @@ test("Test NEAR package", async () => {
 
         log.info("Test finished successfully")
     } finally {
-        // destroyEnclaveFunction()
+        destroyEnclaveFunction()
     }
 })
 
