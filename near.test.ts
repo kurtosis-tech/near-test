@@ -6,6 +6,10 @@ import {StarlarkRunResult} from "kurtosis-sdk/build/core/lib/enclaves/starlark_r
 import {ServiceContext} from "kurtosis-sdk/build/core/lib/services/service_context";
 import fetch from "node-fetch";
 import * as http from "http";
+import * as xpath from "xpath";
+
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 const TEST_NAME = "near-packge-test";
 const MILLISECONDS_IN_SECOND = 1000;
@@ -24,6 +28,30 @@ def run(plan, args):
 `
 
 jest.setTimeout(180000)
+
+test('Quicker iteration', async() => {
+    const url  = 'http://127.0.0.1:8331/'
+
+    // get some data from the frontend
+    log.info("Testing frontend by getting some data")
+    const getResponse = await fetch(
+        url, {
+            method: "GET",
+        }
+    )
+
+    expect(getResponse.status).toEqual(200)
+
+    const responseBody = await getResponse.text()
+
+    const dom = new JSDOM(responseBody)
+    const document = dom.window.document
+    const xpathToBlockHeight = "//*[@id=\"__next\"]/div[1]/div[3]/div/div[2]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div[2]/div/span"
+    const result = xpath.evaluate(xpathToBlockHeight, document, null, 2, null);
+    const blockHeight = result.stringValue
+    log.info(blockHeight)
+    expect(blockHeight).toBeGreaterThan(1400)
+})
 
 /*
 This example will:
@@ -80,7 +108,7 @@ test("Test NEAR package", async () => {
 
         const apiAddress = `http://${explorerFrontendPublicAddress}:${explorerFrontendPublicPortNumber}`
 
-        
+
 
 
 
