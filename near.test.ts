@@ -6,6 +6,7 @@ import {StarlarkRunResult} from "kurtosis-sdk/build/core/lib/enclaves/starlark_r
 import {ServiceContext} from "kurtosis-sdk/build/core/lib/services/service_context";
 import fetch from "node-fetch";
 import * as http from "http";
+import * as fs from "fs";
 
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -23,18 +24,7 @@ const EXPLORER_FRONTEND_HTTP_PORT_ID = "http"
 const TARGET_BLOCK_HEIGHT = 80
 const TIME_TO_WAIT = 5 * 60 * 1000 // 5 minutes in milliseconds
 
-const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = `
-near_package = import_module("github.com/kurtosis-tech/near-package/main.star")
-def run(plan, args):
-    near_package_output = near_package.run(plan, args)
-    request_recipe = GetHttpRequestRecipe(
-        port_id = "http",
-        endpoint = "/"
-    )
-    # ensure that explorer is up and responds
-    plan.wait(service_name = "explorer-frontend", recipe = request_recipe, field="code", assertion = "==", target_value = 200, timeout = "60s")
-    return near_package_output
-`
+const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = fs.readFileSync('./main.star', 'utf-8')
 
 jest.setTimeout(180000)
 log.setLevel(LOG_LEVEL)
