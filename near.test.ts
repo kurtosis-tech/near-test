@@ -6,7 +6,6 @@ import {StarlarkRunResult} from "kurtosis-sdk/build/core/lib/enclaves/starlark_r
 import {ServiceContext} from "kurtosis-sdk/build/core/lib/services/service_context";
 import fetch from "node-fetch";
 import * as http from "http";
-import * as xpath from "xpath";
 
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
