@@ -1,6 +1,7 @@
-# Typescript Test for Quickstart
+# Typescript Test for NEAR
 
 This is a Kurtosis test written using the [Kurtosis client library in Typescript](https://github.com/kurtosis-tech/kurtosis/tree/main/api/typescript).
+This also uses the NEAR package.
 
 You can find documentation for the client library [here](https://docs.kurtosis.com/client-libs-reference).
 
