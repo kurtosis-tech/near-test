@@ -104,8 +104,26 @@ test("Test NEAR package", async () => {
         const explorerFrontendPublicPortNumber: number = explorerFrontendHttpPortSpec.number
         const explorerFrontendPublicAddress: string = explorerFrontendServiceCtx.getMaybePublicIPAddress()
 
-        const apiAddress = `http://${explorerFrontendPublicAddress}:${explorerFrontendPublicPortNumber}`
+        const explorerUrl = `http://${explorerFrontendPublicAddress}:${explorerFrontendPublicPortNumber}`
 
+
+
+        log.info("Testing frontend by getting some data")
+        const getResponse = await fetch(
+            explorerUrl, {
+                method: "GET",
+            }
+        )
+
+        expect(getResponse.status).toEqual(200)
+
+        const responseBody = await getResponse.text()
+        const dom = new JSDOM(responseBody)
+        const document = dom.window.document
+        const value = document.querySelector("#__next > div.c-AppWrapper-eIdCBM > div.c-DashboardContainer-duUWuj.container > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(1) > div > div > div > div.c-CardCellText-gSWYEZ.ml-auto.align-self-center.col-md-12.col-12 > div > span").innerHTML
+        const blockHeight:number = parseInt(value.replace(",", ""))
+        log.info(blockHeight)
+        expect(blockHeight).toBeGreaterThan(1400)
 
 
 
