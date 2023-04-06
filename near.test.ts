@@ -20,6 +20,8 @@ const IS_NOT_DRY_RUN = false
 const EXPLORER_FRONTEND_SERVICE_NAME = "explorer-frontend"
 const EXPLORER_FRONTEND_HTTP_PORT_ID = "http"
 
+const TARGET_BLOCK_HEIGHT = 1400
+
 const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = `
 near_package = import_module("github.com/kurtosis-tech/near-package/main.star")
 def run(plan, args):
@@ -29,27 +31,6 @@ def run(plan, args):
 
 jest.setTimeout(180000)
 
-test('Quicker iteration', async() => {
-
-    const url  = 'http://127.0.0.1:8331/'
-    // get some data from the frontend
-    log.info("Testing frontend by getting some data")
-    const getResponse = await fetch(
-        url, {
-            method: "GET",
-        }
-    )
-
-    expect(getResponse.status).toEqual(200)
-
-    const responseBody = await getResponse.text()
-    const dom = new JSDOM(responseBody)
-    const document = dom.window.document
-    const value = document.querySelector("#__next > div.c-AppWrapper-eIdCBM > div.c-DashboardContainer-duUWuj.container > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(1) > div > div > div > div.c-CardCellText-gSWYEZ.ml-auto.align-self-center.col-md-12.col-12 > div > span").innerHTML
-    const blockHeight:number = parseInt(value.replace(",", ""))
-    log.info(blockHeight)
-    expect(blockHeight).toBeGreaterThan(1400)
-})
 
 /*
 This example will:
@@ -107,28 +88,35 @@ test("Test NEAR package", async () => {
         const explorerUrl = `http://${explorerFrontendPublicAddress}:${explorerFrontendPublicPortNumber}`
 
 
+        const endTime = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
 
-        log.info("Testing frontend by getting some data")
-        const getResponse = await fetch(
-            explorerUrl, {
-                method: "GET",
+        let blockHeight = 0
+
+
+        // for a total of 5 minutes keep requesting the API until block height > TARGET_BLOCK_HEIGHT
+        while (Date.now() < endTime) {
+            log.info("Testing frontend by getting some data")
+            const getResponse = await fetch(
+                explorerUrl, {
+                    method: "GET",
+                }
+            )
+
+            expect(getResponse.status).toEqual(200)
+
+            const responseBody = await getResponse.text()
+            const dom = new JSDOM(responseBody)
+            const document = dom.window.document
+            const value = document.querySelector("#__next > div.c-AppWrapper-eIdCBM > div.c-DashboardContainer-duUWuj.container > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(1) > div > div > div > div.c-CardCellText-gSWYEZ.ml-auto.align-self-center.col-md-12.col-12 > div > span").innerHTML
+            blockHeight = parseInt(value.replace(",", ""))
+
+            if (blockHeight > TARGET_BLOCK_HEIGHT) {
+                break
             }
-        )
-
-        expect(getResponse.status).toEqual(200)
-
-        const responseBody = await getResponse.text()
-        const dom = new JSDOM(responseBody)
-        const document = dom.window.document
-        const value = document.querySelector("#__next > div.c-AppWrapper-eIdCBM > div.c-DashboardContainer-duUWuj.container > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(1) > div > div > div > div.c-CardCellText-gSWYEZ.ml-auto.align-self-center.col-md-12.col-12 > div > span").innerHTML
-        const blockHeight:number = parseInt(value.replace(",", ""))
-        log.info(blockHeight)
-        expect(blockHeight).toBeGreaterThan(1400)
+        }
 
 
-
-
-
+        expect(blockHeight).toBeGreaterThan(TARGET_BLOCK_HEIGHT)
 
         log.info("Test finished successfully")
     } finally {
