@@ -15,6 +15,7 @@ const MILLISECONDS_IN_SECOND = 1000;
 const IS_PARTITIONING_ENABLED = false;
 const SCRIPT_PARAMS = "{}"
 const IS_NOT_DRY_RUN = false
+const LOG_LEVEL = "info"
 
 const EXPLORER_FRONTEND_SERVICE_NAME = "explorer-frontend"
 const EXPLORER_FRONTEND_HTTP_PORT_ID = "http"
@@ -35,7 +36,7 @@ def run(plan, args):
 `
 
 jest.setTimeout(180000)
-
+log.setLevel(LOG_LEVEL)
 
 /*
 This example will:
