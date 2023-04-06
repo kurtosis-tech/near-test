@@ -18,7 +18,7 @@
   "dependencies": {
     "@types/node-fetch": "2.x",
     "jsdom": "^21.1.1",
-    "kurtosis-sdk": "^0.73.0",
+    "kurtosis-sdk": "^0.74.0",
     "node-fetch": "2.6.7",
     "xpath": "^0.0.32"
   }
