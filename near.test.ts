@@ -7,16 +7,18 @@ import {ServiceContext} from "kurtosis-sdk/build/core/lib/services/service_conte
 import fetch from "node-fetch";
 import * as http from "http";
 
-const TEST_NAME = "quick-start-ts-example";
+const TEST_NAME = "near-packge-test";
 const MILLISECONDS_IN_SECOND = 1000;
 const IS_PARTITIONING_ENABLED = false;
 const EMPTY_PACKAGE_PARAMS = "{}"
 const IS_NOT_DRY_RUN = false
 
-const QUICKSTART_PACKAGE = "github.com/kurtosis-tech/awesome-kurtosis/quickstart"
-const API_SERVICE_NAME = "api"
-const CONTENT_TYPE = "application/json"
-const HTTP_PORT_ID = "http"
+const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = `
+near_package = import_module("github.com/kurtosis-tech/near-package/main.star")
+def run(plan, args):
+    near_package_output = near_package.run(plan, args)
+    return output
+`
 
 // TODO use constants from a library maybe
 const HTTP_CREATED = 201
@@ -24,25 +26,12 @@ const HTTP_OK = 200
 
 jest.setTimeout(180000)
 
-class Actor {
-    first_name: string;
-    last_name: string;
-
-    constructor(first_name: string, last_name: string) {
-        this.first_name = first_name
-        this.last_name = last_name
-    }
-}
-
 /*
 This example will:
-1. Start the quickstart
-2. Make some API calls and verify we receive the right information
-
-This test is an example of how Kurtosis makes writing distributed system tests as easy as single
-server apps.
+1. Spin up a near package via composition
+2. Make assertions on the state of the forntend
 */
-test("Test quickstart post and get", async () => {
+test("Test NEAR package", async () => {
 
     // ------------------------------------- ENGINE SETUP ----------------------------------------------
     log.info("Creating the enclave")
@@ -58,10 +47,10 @@ test("Test quickstart post and get", async () => {
         // ------------------------------------- PACKAGE RUN ----------------------------------------------
         log.info("------------ EXECUTING PACKAGE ---------------")
 
-        const runResult: Result<StarlarkRunResult, Error> = await enclaveContext.runStarlarkRemotePackageBlocking(QUICKSTART_PACKAGE, EMPTY_PACKAGE_PARAMS, IS_NOT_DRY_RUN)
+        const runResult: Result<StarlarkRunResult, Error> = await enclaveContext.()
 
         if (runResult.isErr()) {
-            log.error(`An error occurred execute Starlark package '${QUICKSTART_PACKAGE}'`);
+            log.error(`An error occurred execute Starlark script '${STARLARK_SCRIPT_CALLING_NEAR_PACKAGE}'`);
             throw runResult.error
         }
 
