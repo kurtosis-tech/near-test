@@ -86,6 +86,7 @@ test("Test NEAR package", async () => {
 
         const explorerUrl = `http://${explorerFrontendPublicAddress}:${explorerFrontendPublicPortNumber}`
 
+        log.info(`Explorer available on URL ${explorerUrl}`)
 
         const endTime = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
 
