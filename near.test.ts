@@ -25,7 +25,7 @@ const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = `
 near_package = import_module("github.com/kurtosis-tech/near-package/main.star")
 def run(plan, args):
     near_package_output = near_package.run(plan, args)
-    return output
+    return near_package_output
 `
 
 jest.setTimeout(180000)
