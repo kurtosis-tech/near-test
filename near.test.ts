@@ -19,7 +19,7 @@ const IS_NOT_DRY_RUN = false
 const EXPLORER_FRONTEND_SERVICE_NAME = "explorer-frontend"
 const EXPLORER_FRONTEND_HTTP_PORT_ID = "http"
 
-const TARGET_BLOCK_HEIGHT = 1400
+const TARGET_BLOCK_HEIGHT = 500
 
 const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = `
 near_package = import_module("github.com/kurtosis-tech/near-package/main.star")
@@ -120,7 +120,7 @@ test("Test NEAR package", async () => {
 
         log.info("Test finished successfully")
     } finally {
-        destroyEnclaveFunction()
+        // destroyEnclaveFunction()
     }
 })
 
