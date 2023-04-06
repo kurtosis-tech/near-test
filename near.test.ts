@@ -23,8 +23,9 @@ const EXPLORER_FRONTEND_HTTP_PORT_ID = "http"
 
 const TARGET_BLOCK_HEIGHT = 80
 const TIME_TO_WAIT = 5 * 60 * 1000 // 5 minutes in milliseconds
+const NEAR_COMPOSITION_SCRIPT = "./main.star"
 
-const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = fs.readFileSync('./main.star', 'utf-8')
+const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = fs.readFileSync(NEAR_COMPOSITION_SCRIPT, 'utf-8')
 
 jest.setTimeout(180000)
 log.setLevel(LOG_LEVEL)
