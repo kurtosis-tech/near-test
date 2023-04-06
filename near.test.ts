@@ -126,7 +126,8 @@ test("Test NEAR package", async () => {
 
         log.info("Test finished successfully")
     } finally {
-        destroyEnclaveFunction()
+        // Disabling destroy enclave for DEMO
+        // destroyEnclaveFunction()
     }
 })
 
