@@ -13,6 +13,9 @@ const IS_PARTITIONING_ENABLED = false;
 const SCRIPT_PARAMS = "{}"
 const IS_NOT_DRY_RUN = false
 
+const EXPLORER_FRONTEND_SERVICE_NAME = "explorer-frontend"
+const EXPLORER_FRONTEND_HTTP_PORT_ID = "http"
+
 const STARLARK_SCRIPT_CALLING_NEAR_PACKAGE = `
 near_package = import_module("github.com/kurtosis-tech/near-package/main.star")
 def run(plan, args):
@@ -56,16 +59,31 @@ test("Test NEAR package", async () => {
 
         log.info("------------ EXECUTING TEST ---------------")
 
-        const getApiServiceContextResult: Result<ServiceContext, Error> = await enclaveContext.getServiceContext(API_SERVICE_NAME);
-        if (getApiServiceContextResult.isErr()) {
+        const getExplorerFrontendServiceCtxResult: Result<ServiceContext, Error> = await enclaveContext.getServiceContext(EXPLORER_FRONTEND_SERVICE_NAME);
+        if (getExplorerFrontendServiceCtxResult.isErr()) {
             log.error("An error occurred getting the API service context");
-            throw getApiServiceContextResult.error;
+            throw getExplorerFrontendServiceCtxResult.error;
         }
-        const apiServiceContext: ServiceContext = getApiServiceContextResult.value;
-        const apiServicePublicPorts: Map<string, PortSpec> = await apiServiceContext.getPublicPorts();
-        if (apiServicePublicPorts.size == 0){
+        const explorerFrontendServiceCtx: ServiceContext = getExplorerFrontendServiceCtxResult.value;
+        const explorerFrontendPublicPorts: Map<string, PortSpec> = await explorerFrontendServiceCtx.getPublicPorts();
+        if (explorerFrontendPublicPorts.size == 0){
             throw new Error("Expected to receive API service public ports but none was received")
         }
+
+        if (!explorerFrontendPublicPorts.has(EXPLORER_FRONTEND_HTTP_PORT_ID)){
+            throw new Error(`Expected to find explorer frontend port wih ID ${EXPLORER_FRONTEND_HTTP_PORT_ID} but it was not found`)
+        }
+
+        const explorerFrontendHttpPortSpec: PortSpec = explorerFrontendPublicPorts.get(EXPLORER_FRONTEND_HTTP_PORT_ID)!
+        const explorerFrontendPublicPortNumber: number = explorerFrontendHttpPortSpec.number
+        const explorerFrontendPublicAddress: string = explorerFrontendServiceCtx.getMaybePublicIPAddress()
+
+        const apiAddress = `http://${explorerFrontendPublicAddress}:${explorerFrontendPublicPortNumber}`
+
+        
+
+
+
 
 
         log.info("Test finished successfully")
