@@ -41,7 +41,7 @@ test("Test NEAR package", async () => {
 
     try {
         // ------------------------------------- PACKAGE RUN ----------------------------------------------
-        log.info("------------ EXECUTING PACKAGE ---------------")
+        log.info("------------ EXECUTING SCRIPT ---------------")
 
         const runResult: Result<StarlarkRunResult, Error> = await enclaveContext.runStarlarkScriptBlocking(STARLARK_SCRIPT_CALLING_NEAR_PACKAGE, SCRIPT_PARAMS, IS_NOT_DRY_RUN)
 
